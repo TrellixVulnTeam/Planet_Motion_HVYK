@@ -1,6 +1,9 @@
 from turtle import Turtle  # Used to draw planet trajectories
+import math
 
-class Planet(object):
+G = 1
+
+class planet:
     def __init__(self, name, rad, mass, dist, color, vx, vy):
 
         """ Initialising Varibales """
@@ -57,7 +60,8 @@ class Planet(object):
     def setYV(self, newVY):
         self.vY = newVY
 
-class Star(object):
+
+class star:
 
     """ Initialise the Star class """
     def __init__(self, name, radius, mass, color, x, y):
@@ -87,10 +91,44 @@ class Star(object):
     def __str__(self):
         return self.name
 
-Sun = Star("Sun",150.0,15000.0,"yellow",0,250)
-Star2 = Star("Star2", 200.0,20000.0,"purple",0,0)
-p1 = Planet("P1", 19, 20,220,"green", 0.0,10) # Check if planet is drawn
+class solar_system(planet):
+    """ Initialise solar system class """
+    def __init__(self, star):
+        self.star = None
+        self.planets = []
+        self.mw = Turtle()
+        self.mw.ht()
+
+    def add_planet(self, planet):
+        self.planets.append(planet)
+    
+    def add_star(self, star):
+        self.star = star
+
+    def rotate_planet(self):
+        """ Here we define how each planet will orbit the star  """
+        for p in self.planets:
+
+            rx = self.star.getX() - p.getX() # Finding the components of the vector from the star to the planet
+            ry = self.star.getY() - p.getY()   
+
+            r = math.sqrt(rx ** 2 + ry ** 2) # the magnitude of the above vector       
+
+            accX = G * self.star.getMass() * rx / r ** 3 # Acceleration of the planet found using Newton's Law of Gravitation
+            accY = G * self.star.getMass() * ry / r ** 3            
 
 
+Sun = star("Sun",150.0,15000.0,"yellow",0,0)
+p1 = planet("P1", 19, 20,220,"green", 0.0,10) # Check if planet is drawn
+p2 = planet("P1", 19, 20,300,"blue", 0.0, 15.0)
+
+mw = solar_system(Sun)
+mw.add_star(Sun)
+mw.add_planet(p1)
+mw.add_planet(p2)
+time = 10
+
+for t in range(time):
+    mw.rotate_planet()
         
 input("Press 'Enter' to exit...")
