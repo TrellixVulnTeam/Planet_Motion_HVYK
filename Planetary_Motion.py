@@ -57,7 +57,40 @@ class Planet(object):
     def setYV(self, newVY):
         self.vY = newVY
 
+class Star(object):
+
+    """ Initialise the Star class """
+    def __init__(self, name, radius, mass, color, x, y):
+        self.name = name
+        self.rad = radius
+        self.m = mass
+        self.c = color
+        self.x = x
+        self.y = y
+
+        """Set the given position of each planet """
+        self.mw = Turtle()
+        self.mw.up()
+        self.mw.goto(self.x, self.y)
+        self.mw.down()
+        self.mw.dot(self.rad, self.c)
+
+    def getMass(self):
+        return self.m
+
+    def getX(self):
+        return self.x
+
+    def getY(self):
+        return self.y
+
+    def __str__(self):
+        return self.name
+
+Sun = Star("Sun",150.0,15000.0,"yellow",0,250)
+Star2 = Star("Star2", 200.0,20000.0,"purple",0,0)
 p1 = Planet("P1", 19, 20,220,"green", 0.0,10) # Check if planet is drawn
-p1.movePos(32,2)
+
+
         
 input("Press 'Enter' to exit...")
