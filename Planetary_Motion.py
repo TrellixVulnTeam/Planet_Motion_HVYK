@@ -2,7 +2,7 @@ from turtle import Turtle  # Used to draw planet trajectories
 import math
 import numpy as np
 import integrators as ig  
-G = 5
+
 
 class planet:
     def __init__(self, name, rad, mass, dist, color, vx, vy):
@@ -93,33 +93,36 @@ class solar_system(planet):
     def rotate_planet(self):
         """ Here we define how each planet will orbit the star  """
         for p in self.planets:
-            r = self.star.getR() - p.getR() # Vector from planet to star                        
-            mag_r = np.sqrt(r.dot(r)) # Nagnitude of r        
-            a = G * self.star.getMass() * r / mag_r ** 3 # Acceleration due to the Star acting on planet
+            d = self.star.getR() - p.getR() # Vector from planet to star                        
+            mag_d = np.sqrt(r.dot(r)) # Magnitude of d        
+            a = G * self.star.getMass() * d / mag_d ** 3 # Acceleration due to the Star acting on planet
             
             """ Move planet according to the acceleration due to gravity """
-            r = ig.pos_Verlet(r,p.getV(),a,dt)
-            print (r)
-            p.movePos(r)
-            mag_r = np.sqrt(r.dot(r))
-            new_a = G * self.star.getMass() * r / r**3
-
-            v = ig.vel_Verlet(p.getV(),a,new_a,dt)
-            print (v)
+            r = ig.pos_Verlet(p.getR(),p.getV(),a,dt) # Calculates the new position r    
+            p.movePos(r) # Moving the planet to the new position
+            d = self.star.getR() - p.getR()
+            mag_d = np.sqrt(r.dot(r))
+            new_a = G * self.star.getMass() * d / mag_d**3 # Acceleration at the new position
+            v = ig.vel_Verlet(p.getV(),a,new_a,dt) # Velocity of planet
             p.setV(v) 
          
 
 
 
-Sun = star("Sun",150.0,15000.0,"yellow",0,0,)
+Sun = star("Sun",150.0,15000.0,"purple",0,0,)
 p1 = planet("P1", 19, 20,220,"green", 0.0,10) 
-p2 = planet("P2", 30, 20,300,"blue", 0.0, 15.0)
-dt = 0.1
+p2 = planet("Planet 2", 30, 80, 340, "blue", 0.0, 7.7)
+p3 = planet("Planet 3", 40, 110, 380, "red", 0.0, 7.3)
 mw = solar_system(Sun)
 mw.add_star(Sun)
 mw.add_planet(p1)
 mw.add_planet(p2)
-time = 10000
+mw.add_planet(p3)
+
+""" Variables that affect the simulation """
+dt = 0.01
+G = 2.5
+time = 100000
 
 for t in range(time):
     mw.rotate_planet()
